@@ -103,14 +103,48 @@ mean_and_sd = function(x) {
   mean_x = mean(x)
   sd_x = sd(x)
 
-  tibble(
+  output_df = tibble(
     mean = mean_x, 
     sd = sd_x
   )
+  return(output_df)
 }
+
 
 ```
 
+```{r}
+sim_data <- tibble( 
+  x = rnorm(30, mean= 2, sd=3)
+  )
+
+sim_data %>% summarize(
+  mean = mean(x), 
+  sd = sd(x)
+)
+```
+
+Let's write a function that simulates data, computes mean and sd 
+```{r}
+sim_mean_sd = function(n, mu, sigma) {
+  
+    sim_data = tibble( 
+      x = rnorm(n, mean = mu, sd = sigma)
+      )
+    
+    sim_data %>% summarize(
+      mean = mean(x), 
+      sd = sd(x)
+      )
+
+  
+}
+
+sim_mean_sd(30, 4, 3)
+sim_mean_sd(n = 30, mu = 4, sigma = 3)
+
+sim_data
+```
 
 
 

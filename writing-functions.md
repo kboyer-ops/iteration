@@ -129,3 +129,108 @@ z_scores = function(x) {
   return(z)
 }
 ```
+
+``` r
+mean_and_sd = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("Argument x should be numeric")
+  } else if (length(x) == 1) {
+    stop("Cannot be computed for length 1 vectors")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+
+  list(mean = mean_x, 
+       sd = sd_x)
+}
+
+
+mean_and_sd = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("Argument x should be numeric")
+  } else if (length(x) == 1) {
+    stop("Cannot be computed for length 1 vectors")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+
+  output_df = tibble(
+    mean = mean_x, 
+    sd = sd_x
+  )
+  return(output_df)
+}
+```
+
+``` r
+sim_data <- tibble( 
+  x = rnorm(30, mean= 2, sd=3)
+  )
+
+sim_data %>% summarize(
+  mean = mean(x), 
+  sd = sd(x)
+)
+```
+
+    ## # A tibble: 1 × 2
+    ##    mean    sd
+    ##   <dbl> <dbl>
+    ## 1  2.51  2.82
+
+Let’s write a function that simulates data, computes mean and sd
+
+``` r
+sim_mean_sd = function(n, mu, sigma) {
+  
+    sim_data = tibble( 
+      x = rnorm(n, mean = mu, sd = sigma)
+      )
+    
+    sim_data %>% summarize(
+      mean = mean(x), 
+      sd = sd(x)
+      )
+
+  
+}
+
+sim_mean_sd(30, 4, 3)
+```
+
+    ## # A tibble: 1 × 2
+    ##    mean    sd
+    ##   <dbl> <dbl>
+    ## 1  3.96  2.43
+
+``` r
+sim_mean_sd(n = 30, mu = 4, sigma = 3)
+```
+
+    ## # A tibble: 1 × 2
+    ##    mean    sd
+    ##   <dbl> <dbl>
+    ## 1  2.75  2.73
+
+``` r
+sim_data
+```
+
+    ## # A tibble: 30 × 1
+    ##         x
+    ##     <dbl>
+    ##  1  2.57 
+    ##  2 -3.41 
+    ##  3  6.40 
+    ##  4  2.46 
+    ##  5  8.52 
+    ##  6  3.43 
+    ##  7 -0.130
+    ##  8  3.83 
+    ##  9 -0.802
+    ## 10 -1.76 
+    ## # … with 20 more rows
