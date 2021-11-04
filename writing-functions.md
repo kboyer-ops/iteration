@@ -234,3 +234,115 @@ sim_data
     ##  9 -0.802
     ## 10 -1.76 
     ## # … with 20 more rows
+
+## Revisit Napoleon Dynamite
+
+``` r
+library(rvest)
+
+url = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=1"
+
+dynamite_html = read_html(url)
+
+review_titles = 
+  dynamite_html %>%
+  html_elements(".a-text-bold span") %>%
+  html_text()
+
+review_stars = 
+  dynamite_html %>%
+  html_elements("#cm_cr-review_list .review-rating") %>%
+  html_text()
+
+review_text = 
+  dynamite_html %>%
+  html_elements(".review-text-content span") %>%
+  html_text()
+
+reviews = tibble(
+  title = review_titles,
+  stars = review_stars,
+  text = review_text
+)
+```
+
+There are a lot of review pages
+
+write a function that gets views based on page url
+
+``` r
+get_page_reviews <- function(page_url) { 
+  
+    html = read_html(page_url)
+    
+    review_titles = 
+      html %>%
+      html_elements(".a-text-bold span") %>%
+      html_text()
+    
+    review_stars = 
+      html %>%
+      html_elements("#cm_cr-review_list .review-rating") %>%
+      html_text()
+    
+    review_text = 
+     html %>%
+      html_elements(".review-text-content span") %>%
+      html_text()
+    
+    reviews = tibble(
+      title = review_titles,
+      stars = review_stars,
+      text = review_text
+    )
+    return(reviews)
+  }
+  
+url = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=1"
+
+get_page_reviews(url)  
+```
+
+    ## # A tibble: 10 × 3
+    ##    title                                                 stars   text           
+    ##    <chr>                                                 <chr>   <chr>          
+    ##  1 I Just everyone to know this....                      5.0 ou… "\n  VOTE FOR …
+    ##  2 the cobweb in his hair during the bike ramp scene lol 5.0 ou… "\n  5 stars f…
+    ##  3 Best quirky movie ever                                5.0 ou… "\n  You all k…
+    ##  4 Classic Film                                          5.0 ou… "\n  Had to or…
+    ##  5 hehehehe                                              5.0 ou… "\n  goodjobbo…
+    ##  6 Painful                                               1.0 ou… "\n  I think I…
+    ##  7 GRAND                                                 5.0 ou… "\n  GRAND\n"  
+    ##  8 Hello, 90s                                            5.0 ou… "\n  So nostal…
+    ##  9 Cult Classic                                          5.0 ou… "\n  Watched i…
+    ## 10 Format was inaccurate                                 4.0 ou… "\n  There was…
+
+``` r
+url_base = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber="
+vec_urls = str_c(url_base, 1:5)
+
+dynamite_reviews = bind_rows(
+  get_page_reviews(vec_urls[1]),
+  get_page_reviews(vec_urls[2]),
+  get_page_reviews(vec_urls[3]),
+  get_page_reviews(vec_urls[4]),
+  get_page_reviews(vec_urls[5])
+)
+
+dynamite_reviews
+```
+
+    ## # A tibble: 50 × 3
+    ##    title                                                 stars   text           
+    ##    <chr>                                                 <chr>   <chr>          
+    ##  1 I Just everyone to know this....                      5.0 ou… "\n  VOTE FOR …
+    ##  2 the cobweb in his hair during the bike ramp scene lol 5.0 ou… "\n  5 stars f…
+    ##  3 Best quirky movie ever                                5.0 ou… "\n  You all k…
+    ##  4 Classic Film                                          5.0 ou… "\n  Had to or…
+    ##  5 hehehehe                                              5.0 ou… "\n  goodjobbo…
+    ##  6 Painful                                               1.0 ou… "\n  I think I…
+    ##  7 GRAND                                                 5.0 ou… "\n  GRAND\n"  
+    ##  8 Hello, 90s                                            5.0 ou… "\n  So nostal…
+    ##  9 Cult Classic                                          5.0 ou… "\n  Watched i…
+    ## 10 Format was inaccurate                                 4.0 ou… "\n  There was…
+    ## # … with 40 more rows

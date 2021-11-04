@@ -147,4 +147,86 @@ sim_data
 ```
 
 
+## Revisit Napoleon Dynamite
+
+```{r}
+library(rvest)
+
+url = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=1"
+
+dynamite_html = read_html(url)
+
+review_titles = 
+  dynamite_html %>%
+  html_elements(".a-text-bold span") %>%
+  html_text()
+
+review_stars = 
+  dynamite_html %>%
+  html_elements("#cm_cr-review_list .review-rating") %>%
+  html_text()
+
+review_text = 
+  dynamite_html %>%
+  html_elements(".review-text-content span") %>%
+  html_text()
+
+reviews = tibble(
+  title = review_titles,
+  stars = review_stars,
+  text = review_text
+)
+
+```
+
+There are a lot of review pages 
+
+write a function that gets views based on page url 
+```{r}
+get_page_reviews <- function(page_url) { 
+  
+    html = read_html(page_url)
+    
+    review_titles = 
+      html %>%
+      html_elements(".a-text-bold span") %>%
+      html_text()
+    
+    review_stars = 
+      html %>%
+      html_elements("#cm_cr-review_list .review-rating") %>%
+      html_text()
+    
+    review_text = 
+     html %>%
+      html_elements(".review-text-content span") %>%
+      html_text()
+    
+    reviews = tibble(
+      title = review_titles,
+      stars = review_stars,
+      text = review_text
+    )
+    return(reviews)
+  }
+  
+url = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=1"
+
+get_page_reviews(url)  
+
+url_base = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber="
+vec_urls = str_c(url_base, 1:5)
+
+dynamite_reviews = bind_rows(
+  get_page_reviews(vec_urls[1]),
+  get_page_reviews(vec_urls[2]),
+  get_page_reviews(vec_urls[3]),
+  get_page_reviews(vec_urls[4]),
+  get_page_reviews(vec_urls[5])
+)
+
+dynamite_reviews
+```
+
+
 
