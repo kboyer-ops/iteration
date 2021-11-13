@@ -1,0 +1,13 @@
+---
+title: "iteration_and_listcols"
+author: "Kaila Boyer"
+date: "11/13/2021"
+output: github_document
+---
+
+```{r, include = FALSE}
+library(tidyverse)
+library(rvest)
+
+set.seed(1)
+```
